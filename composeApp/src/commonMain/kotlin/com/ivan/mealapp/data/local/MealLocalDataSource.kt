@@ -11,7 +11,7 @@ interface MealLocalDataSource {
 
     fun getMealById(id: String): Flow<Either<Failure, Meal>>
 
-    suspend fun saveMeals(meals: List<Meal>)
+    suspend fun saveMealsByCategory(meals: List<Meal>, category: String)
 
     suspend fun saveMeal(meal: Meal)
 

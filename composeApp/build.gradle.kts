@@ -15,6 +15,13 @@ plugins {
 }
 
 kotlin {
+    jvm("desktop") {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
+    }
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -40,12 +47,20 @@ kotlin {
 
     sourceSets {
 
+        val desktopMain by getting {
+            resources.srcDir("src/commonMain/resources")
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation("io.ktor:ktor-client-apache5:2.3.11")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.9.0")
+            }
+        }
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
-            implementation(libs.play.services.location)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -69,7 +84,6 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.moko.permissions.compose)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -77,7 +91,7 @@ kotlin {
     }
 
     // Added to prevent a build error when using Android Studio "Make" button
-    task("testClasses")
+    //task("testClasses")
 }
 
 android {

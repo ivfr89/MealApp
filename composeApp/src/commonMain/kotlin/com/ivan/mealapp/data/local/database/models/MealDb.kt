@@ -10,7 +10,7 @@ data class MealDb(
     val name: String,
     val image: String,
     val favourite: Boolean,
+    val category: String,
     val preparationSteps: String? = null,
-    val category: String? = null,
     val tags: String? = null
 )

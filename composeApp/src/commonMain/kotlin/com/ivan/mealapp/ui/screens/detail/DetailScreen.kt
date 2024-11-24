@@ -1,6 +1,8 @@
 package com.ivan.mealapp.ui.screens.detail
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,10 +13,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -31,11 +36,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ivan.mealapp.domain.models.Meal
 import com.ivan.mealapp.ui.common.LoadingIndicator
+import com.ivan.mealapp.ui.common.LocalizedStrings
 import com.ivan.mealapp.ui.screens.Screen
-import mealapp.composeapp.generated.resources.Res
-import mealapp.composeapp.generated.resources.back
-import mealapp.composeapp.generated.resources.favorite
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -64,7 +66,7 @@ fun DetailScreen(id: String, viewModel: DetailViewModel = koinViewModel(), onBac
                     FloatingActionButton(onClick = { viewModel.handleAction(DetailScreenActions.ToggleFavourite) }) {
                         Icon(
                             imageVector = if (movie.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = stringResource(Res.string.favorite)
+                            contentDescription = LocalizedStrings.getString("favorite")
                         )
                     }
                 }
@@ -78,7 +80,7 @@ fun DetailScreen(id: String, viewModel: DetailViewModel = koinViewModel(), onBac
             )
 
             state.meal?.let {
-                MovieDetail(
+                MealDetail(
                     meal = it,
                     modifier = Modifier.padding(padding)
                 )
@@ -101,7 +103,7 @@ private fun DetailTopBar(
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = stringResource(Res.string.back)
+                    contentDescription = LocalizedStrings.getString("back")
                 )
             }
         },
@@ -110,7 +112,7 @@ private fun DetailTopBar(
 }
 
 @Composable
-private fun MovieDetail(
+private fun MealDetail(
     meal: Meal,
     modifier: Modifier = Modifier
 ) {
@@ -126,9 +128,50 @@ private fun MovieDetail(
                 .fillMaxWidth()
                 .aspectRatio(16 / 9f)
         )
-        Text(text = meal.category.orEmpty(), modifier = Modifier.padding(16.dp))
-        Text(text = meal.tags.toString(), modifier = Modifier.padding(16.dp))
-        Text(text = meal.preparationSteps.orEmpty(), modifier = Modifier.padding(16.dp))
+        SectionTags(title = LocalizedStrings.getString("tags"), tags = meal.tags.orEmpty())
+        SectionText(title = LocalizedStrings.getString("category"), content = meal.category.orEmpty())
+        SectionText(title = LocalizedStrings.getString("howto"), content = meal.preparationSteps.orEmpty())
     }
+}
 
+@Composable
+fun SectionText(modifier: Modifier = Modifier, title: String, content: String) {
+    if (content.isEmpty()) return
+
+    Column(
+        modifier = modifier.padding(16.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(text = title, style = MaterialTheme.typography.titleLarge)
+        Text(text = content, style = MaterialTheme.typography.bodyLarge)
+    }
+}
+
+@Composable
+fun SectionTags(modifier: Modifier = Modifier, title: String, tags: List<String>) {
+    if (tags.isEmpty()) return
+
+    Column(
+        modifier = modifier.padding(16.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(text = title, style = MaterialTheme.typography.titleMedium)
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            tags.forEach {
+                AssistChip(
+                    onClick = {},
+                    label = { Text(it) },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        labelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                )
+            }
+        }
+    }
 }

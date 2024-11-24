@@ -9,7 +9,7 @@ import com.ivan.mealapp.domain.models.functional.Failure
 import com.ivan.mealapp.domain.models.functional.flatMapLeft
 import com.ivan.mealapp.domain.repository.MealRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 
 class MealRepositoryImpl(
     private val remoteDataSource: MealRemoteDataSource,
@@ -17,14 +17,14 @@ class MealRepositoryImpl(
 ) : MealRepository {
 
     override suspend fun getMealsByCategory(category: String): Flow<Either<Failure, List<Meal>>> =
-        localDataSource.getMealsByCategory(category).map { localMeals ->
+        localDataSource.getMealsByCategory(category).mapLatest { localMeals ->
             localMeals.flatMapLeft {
                 fetchAndSaveRemoteMeals(category)
             }
         }
 
     override suspend fun getMealById(id: String): Flow<Either<Failure, Meal>> =
-        localDataSource.getMealById(id).map { localMeal ->
+        localDataSource.getMealById(id).mapLatest { localMeal ->
             localMeal.flatMapLeft {
                 remoteDataSource.getMealById(id).map {
                     it.toDomain().also { localDataSource.saveMeal(it) }
@@ -33,7 +33,7 @@ class MealRepositoryImpl(
         }
 
     override suspend fun toggleFavorite(meal: Meal): Either<Failure, Unit> {
-        localDataSource.saveMeals(listOf(meal.copy(isFavourite = true)))
+        localDataSource.saveMeal(meal.copy(isFavourite = !meal.isFavourite))
         return Either.Right(Unit)
     }
 
@@ -41,6 +41,6 @@ class MealRepositoryImpl(
     private suspend fun fetchAndSaveRemoteMeals(category: String): Either<Failure, List<Meal>> =
         remoteDataSource.getMealsByCategory(category).map {
             it.meals.map { meal -> meal.toDomain() }
-                .also { meals -> localDataSource.saveMeals(meals) }
+                .also { meals -> localDataSource.saveMealsByCategory(meals, category) }
         }
 }

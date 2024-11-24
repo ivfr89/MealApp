@@ -28,8 +28,8 @@ class MealLocalDataSourceImpl(
                     .toLeft()
             }
 
-    override suspend fun saveMeals(meals: List<Meal>) {
-        mealsDao.saveMeals(meals.map { it.toDb() })
+    override suspend fun saveMealsByCategory(meals: List<Meal>, category: String) {
+        mealsDao.saveMeals(meals.map { it.copy(category = category).toDb() })
     }
 
     override suspend fun saveMeal(meal: Meal) {

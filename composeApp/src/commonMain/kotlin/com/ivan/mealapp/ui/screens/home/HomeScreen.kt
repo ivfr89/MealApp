@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +14,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,12 +38,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ivan.mealapp.domain.models.Meal
+import com.ivan.mealapp.ui.common.CircularIconWithText
 import com.ivan.mealapp.ui.common.LoadingIndicator
+import com.ivan.mealapp.ui.common.LocalizedStrings
 import com.ivan.mealapp.ui.screens.Screen
-import mealapp.composeapp.generated.resources.Res
-import mealapp.composeapp.generated.resources.app_name
-import mealapp.composeapp.generated.resources.favorite
-import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -49,7 +53,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel()
 ) {
     LaunchedEffect(Unit) {
-        viewModel.handleAction(HomeScreenActions.Initialize(CategoryType.Seafood))
+        viewModel.handleAction(HomeScreenActions.Initialize(CategoryType.SEAFOOD))
     }
 
     Screen {
@@ -58,7 +62,7 @@ fun HomeScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = stringResource(Res.string.app_name)) },
+                    title = { Text(text = LocalizedStrings.getString("app_name")) },
                     scrollBehavior = scrollBehavior
                 )
             },
@@ -71,15 +75,22 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxSize().padding(padding)
             )
 
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(120.dp),
-                contentPadding = PaddingValues(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+            Column(
                 modifier = Modifier.padding(padding)
             ) {
-                items(state.meals, key = { it.id }) {
-                    MealItem(meal = it) { onMovieClick(it) }
+                CategoryLayout {
+                    viewModel.handleAction(it)
+                }
+
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(120.dp),
+                    contentPadding = PaddingValues(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(state.meals, key = { it.id }) {
+                        MealItem(meal = it) { onMovieClick(it) }
+                    }
                 }
             }
         }
@@ -104,7 +115,7 @@ fun MealItem(meal: Meal, onClick: () -> Unit) {
             if (meal.isFavourite) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
-                    contentDescription = stringResource(Res.string.favorite),
+                    contentDescription = LocalizedStrings.getString("favorite"),
                     tint = MaterialTheme.colorScheme.inverseOnSurface,
                     modifier = Modifier
                         .padding(8.dp)
@@ -117,6 +128,47 @@ fun MealItem(meal: Meal, onClick: () -> Unit) {
             style = MaterialTheme.typography.bodySmall,
             maxLines = 1,
             modifier = Modifier.padding(8.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun CategoryLayout(
+    modifier: Modifier = Modifier,
+    onAction: (HomeScreenActions) -> Unit = {}
+) {
+
+    Row(
+        modifier = modifier.padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        CircularIconWithText(
+            imageVector = Icons.Filled.CheckCircle,
+            contentDescription = LocalizedStrings.getString("seafood"),
+            text = LocalizedStrings.getString("seafood"),
+            onClick = { onAction(HomeScreenActions.Initialize(CategoryType.SEAFOOD)) }
+        )
+
+        CircularIconWithText(
+            imageVector = Icons.Filled.CheckCircle,
+            contentDescription = LocalizedStrings.getString("chicken"),
+            text = LocalizedStrings.getString("chicken"),
+            onClick = { onAction(HomeScreenActions.Initialize(CategoryType.CHICKEN)) }
+        )
+
+        CircularIconWithText(
+            imageVector = Icons.Filled.CheckCircle,
+            contentDescription = LocalizedStrings.getString("starter"),
+            text = LocalizedStrings.getString("starter"),
+            onClick = { onAction(HomeScreenActions.Initialize(CategoryType.STARTER)) }
+        )
+
+        CircularIconWithText(
+            imageVector = Icons.Filled.CheckCircle,
+            contentDescription = LocalizedStrings.getString("breakfast"),
+            text = LocalizedStrings.getString("breakfast"),
+            onClick = { onAction(HomeScreenActions.Initialize(CategoryType.BREAKFAST)) }
         )
     }
 }

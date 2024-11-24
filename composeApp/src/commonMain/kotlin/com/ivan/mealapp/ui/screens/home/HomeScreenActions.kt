@@ -7,5 +7,8 @@ sealed interface HomeScreenActions : Action {
 }
 
 enum class CategoryType(val value: String) {
-    Seafood("Seafood")
+    SEAFOOD("Seafood"),
+    CHICKEN("Chicken"),
+    STARTER("Starter"),
+    BREAKFAST("Breakfast"),
 }

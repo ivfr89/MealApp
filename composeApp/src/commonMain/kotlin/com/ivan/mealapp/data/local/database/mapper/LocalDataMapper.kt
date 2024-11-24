@@ -19,7 +19,7 @@ internal fun Meal.toDb() = MealDb(
     image = image,
     favourite = isFavourite,
     preparationSteps = preparationSteps,
-    category = category,
+    category = category.orEmpty(),
     tags = tags?.joinToString(STRING_SEPARATOR)
 )
 private const val STRING_SEPARATOR = ","

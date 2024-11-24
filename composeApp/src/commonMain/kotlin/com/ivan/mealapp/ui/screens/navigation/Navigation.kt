@@ -15,7 +15,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parametersOf
 
-@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun Navigation() {
     val navController = rememberNavController()

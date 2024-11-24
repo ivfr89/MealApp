@@ -13,8 +13,6 @@ interface DB {
 @Database(entities = [MealDb::class], version = 1, exportSchema = false)
 abstract class MealsDatabase : RoomDatabase(), DB {
     abstract fun mealsDao(): MealsDao
-
-    override fun clearAllTables() { }
 }
 
 fun getRoomDatabase(
@@ -22,6 +20,9 @@ fun getRoomDatabase(
 ): MealsDatabase {
     return builder
         .setDriver(BundledSQLiteDriver())
+        .fallbackToDestructiveMigration(true)
+        .fallbackToDestructiveMigrationOnDowngrade(true)
+        .fallbackToDestructiveMigrationFrom(true,1)
         .build()
 }
 
