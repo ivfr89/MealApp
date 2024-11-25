@@ -15,7 +15,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.ivan.mealapp.MealAppKt")
+    mainClass.set("com.ivan.desktopapp.MainKt")
 }
 
 tasks.withType<Tar> {

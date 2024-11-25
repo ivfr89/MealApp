@@ -46,13 +46,12 @@ kotlin {
     }
 
     sourceSets {
-
         val desktopMain by getting {
             resources.srcDir("src/commonMain/resources")
             dependencies {
                 implementation(compose.desktop.currentOs)
-                implementation("io.ktor:ktor-client-apache5:2.3.11")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.9.0")
+                implementation(libs.ktor.client.apache5)
+                implementation(libs.kotlinx.coroutines.swing)
             }
         }
 
@@ -85,12 +84,15 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
     }
 
-    // Added to prevent a build error when using Android Studio "Make" button
+    // To prevent a build error when using Android Studio "Make" button
     //task("testClasses")
 }
 

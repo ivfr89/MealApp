@@ -19,4 +19,19 @@ internal fun MealDetailInfoEntity.toDomain() = Meal(
     tags = tags?.split(STRING_SEPARATOR).orEmpty()
 )
 
+internal fun Meal.toDetailEntity() = MealDetailInfoEntity(
+    id = id,
+    name = name,
+    image = image,
+    instructions = preparationSteps.orEmpty(),
+    category = category.orEmpty(),
+    tags = tags?.joinToString(STRING_SEPARATOR).orEmpty()
+)
+
+internal fun Meal.toEntity() = MealEntity(
+    id = id,
+    name = name,
+    image = image,
+)
+
 private const val STRING_SEPARATOR = ","
