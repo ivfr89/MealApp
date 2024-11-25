@@ -2,16 +2,20 @@
 
 **MealApp** is a Kotlin Multiplatform (KMP) application designed to showcase modern development practices across Android, iOS, and Desktop platforms. The project demonstrates how to leverage shared code for mobile and desktop development while preserving platform-specific functionalities where necessary.
 
-![Android](images/android.png)
-![Android](images/android2.png)
-![Android](images/desktop.png)
-![Android](images/android3.png)
+### App Screenshots
 
 
-<img src="android-1" alt="Alt text" width="500">
-![Alt text](image-url)
+<div style="display: flex; gap: 10px; justify-content: center;">
 
-<img src="image-url" alt="Alt text" width="500">
+  <img src="images/android.png" alt="Android Screenshot 1" width="200">
+  <img src="images/android2.png" alt="Android Screenshot 2" width="200">
+
+</div>
+
+### Desktop Screenshot
+
+<img src="images/desktop.png" alt="Desktop Screenshot" width="400">
+
 
 ### Features
 
